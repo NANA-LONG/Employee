@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.Staff1Dao">
+    <!--SQL片段单独查询 -->
+   <sql id="selectStaffListWhere">
+        <where>
+        <if test="employee_id != null" >
+	           employee_id like "%"#{employee_id}"%"
+	       </if>
+	       <if test="department_number != null" >
+	         and  department_number = #{department_number}
+	       </if>
+	       <if test="employee_name != null" >
+	        and employee_name = #{employee_name}
+	       </if>
+	       <if test="nation != null" >
+	        and nation = #{nation}
+	       </if>
+	       <if test="card_id != null" >
+	        and card_id = #{card_id}
+	       </if>
+	       <if test="sex != null" >
+	        and sex = #{sex}
+	       </if>
+	       <if test="role != null" >
+	        and role = #{role}
+	       </if>
+	       <if test="mobile_number != null" >
+	        and mobile_number = #{mobile_number}
+	       </if>
+	       <if test="email != null" >
+	        and email = #{email}
+	       </if>
+        </where>
+    </sql> 
+	<!-- 查询员工列表  -->
+	<select id="selectStaffList" parameterType="staff" 
+                                           resultType="staff">
+		SELECT
+		  id,
+		  employee_id,
+			department_number,
+			employee_name,
+			nation,
+			card_id,
+			sex,
+			role,
+			mobile_number,
+			email
+		FROM
+			staff 
+		<include refid="selectStaffListWhere"/>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectStaffListCount" parameterType="staff" 
+                                                 resultType="Integer">
+		select count(*) from staff
+		<include refid="selectStaffListWhere"/>
+	</select>	
+	
+	<!-- 根据id获取员工信息 -->
+	<select id="getStaffById" parameterType="Integer" 
+	resultType="staff">
+	    select * from staff where id = #{id}
+	</select>
+	<!-- 更新员工 -->
+	<update id="updateStaff" parameterType="staff">
+	    update staff
+	    <set>
+	     <if test=" employee_id!=null">
+	             employee_id=#{employee_id},
+	        </if>
+	        <if test="nation!=null">
+	            nation=#{nation},
+	        </if>
+	        <if test="card_id!=null">
+	            card_id=#{card_id},
+	        </if>
+	        <if test="sex!=null">
+	            sex=#{sex},
+	        </if>
+	        <if test="mobile_number!=null">
+	          	mobile_number=#{mobile_number},
+	        </if>
+	        <if test="email!=null">
+	            email=#{email},
+	        </if>
+	    </set>
+	    where id=#{id}
+	</update>
+<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="staff" 
+                                                 resultType="staff">
+		select * from staff where 1=1 
+		<if test="department_number != null" >
+           and department_number like "%"#{department_number}"%"
+       </if>
+       <if test="employee_name != null" >
+           and employee_name like "%"#{employee_name}"%"
+       </if>
+       <if test="nation != null" >
+           and nation like "%"#{nation}"%"
+       </if>
+        <if test="role != null" >
+           and role like "%"#{role}"%"
+       </if>
+        </select>
+</mapper>

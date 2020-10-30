@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.DepartmentDao">
+    <!--SQL片段单独查询 -->
+   <sql id="selectDepartmentListWhere">
+        <where>
+	       <if test="department_number != null" >
+	           department_number like '%#{department_number}%'
+	       </if>
+	       <if test="department_name != null" >
+	        and department_name = #{department_name}
+	       </if>
+        </where>
+    </sql> 
+	<!-- 查询员工列表  -->
+	<select id="selectDepartmentList" parameterType="department" 
+                                           resultType="department">
+		SELECT
+		     id,
+			 department_number,
+	         department_name
+		FROM
+			department 
+		<include refid="selectDepartmentListWhere"/>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectDepartmentListCount" parameterType="department" 
+                                                 resultType="Integer">
+		select count(*) from department
+		<include refid="selectDepartmentListWhere"/>
+	</select>	
+	
+	<!-- 添加员工 -->
+	<insert id="createDepartment" parameterType="department">
+	    insert into department(
+	       department_number,
+	         department_name
+	             )
+	             values(#{department_number},
+	                    #{department_name}
+	            )
+	</insert>
+	<!-- 根据id获取员工信息 -->
+	<select id="getDepartmentById" parameterType="Integer" 
+	resultType="department">
+	    select * from department where id = #{id}
+	</select>
+	<!-- 更新员工 -->
+	<update id="updateDepartment" parameterType="department">
+	    update department
+	   <!--   #{}  //防止注入，先生成sql语句之后再将参数传入
+	    多用于传参数
+	    ${}		//直接拼接
+	    多用于动态语句，比如说动态表
+	    -->
+	    <set>
+	        <if test=" department_number!=null">
+	             department_number=#{department_number},
+	        </if>
+	        <if test="department_name!=null">
+	            department_name=#{department_name},
+	        </if>
+
+	    </set>
+	    where id=#{id}
+	</update>
+	<!-- 删除员工 -->
+	<delete id="deleteDepartment" parameterType="Integer">
+	    delete from department where id=#{id}
+	</delete>
+	<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="department" 
+                                                 resultType="department">
+		select * from department where 1=1 
+		<set>
+		<if test=" department_number!=null">
+	             department_number=#{department_number},
+	        </if>
+	        <if test="department_name!=null">
+	            department_name=#{department_name},
+	        </if>
+          </set>
+		</select>
+		
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.Award1Dao">
+    <!--SQL片段单独查询 -->
+   <sql id="selectAwardListWhere">
+        <where>
+	       <if test="number != null" >
+	           number like "%"#{number}"%"
+	       </if>
+	       <if test="name != null" >
+	        and name = #{name}
+	       </if>
+	       <if test="createtime != null" >
+	        and createtime = #{createtime}
+	       </if>
+	       <if test="reason != null" >
+	        and reason = #{reason}
+	       </if>
+	       <if test="explains != null" >
+	        and explains = #{explains}
+	       </if>
+        </where>
+    </sql> 
+	<!-- 查询员工列表  -->
+	<select id="selectAwardList" parameterType="award" 
+                                           resultType="award">
+		SELECT
+			id,
+			number,
+			name,
+			reason,
+			explains,
+			createtime
+		FROM
+			award 
+		<include refid="selectAwardListWhere"></include>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectAwardListCount" parameterType="award" 
+                                                 resultType="Integer">
+		select count(*) from award
+		<include refid="selectAwardListWhere"/>
+	</select>	
+	<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="award" 
+                                                 resultType="award">
+		select * from award where 1=1 
+		<set>
+		<if test="number!=null">
+	             number=#{number},
+	        </if>
+	        <if test="name!=null">
+	            name=#{name},
+	        </if>
+	        <if test="reason!=null">
+	            reason=#{reason},
+	        </if>
+	        <if test="explains!=null">
+	            explains=#{explains},
+	        </if>
+	        <if test="createtime!=null">
+	            createtime=#{createtime},
+	        </if>
+	        </set>
+		</select>
+
+</mapper>

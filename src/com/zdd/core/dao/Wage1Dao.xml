@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.Wage1Dao">
+    <!--SQL片段单独查询 -->
+  <sql id="selectWageListWhere">
+        <where>
+	       <if test="bills_number != null" >
+	           bills_number like "%"#{bills_number}"%"
+	       </if>
+	       <if test="id != null" >
+	        and id = #{id}
+	       </if>
+	       <if test="base_pay != null" >
+	        and base_pay = #{base_pay}
+	       </if>
+	       <if test="insurances_pay != null" >
+	        and insurances_pay = #{insurances_pay}
+	       </if>
+           <if test="merit_pay != null" >
+	        and merit_pay = #{merit_pay}
+	       </if>
+	       <if test="subsidy_pay != null" >
+	        and subsidy_pay = #{subsidy_pay}
+	       </if>
+	       <if test="sendtime != null" >
+	        and sendtime = #{sendtime}
+	       </if>
+	       <if test="overtime_pay != null" >
+	        and overtime_pay = #{overtime_pay}
+	       </if>
+        </where>
+    </sql>
+	<!-- 查询员工列表  -->
+	<select id="selectWageList" parameterType="wage" 
+                                           resultType="wage">
+		SELECT
+		 id,
+	 bills_number,
+	 base_pay,
+	 insurances_pay,
+     merit_pay,
+	 subsidy_pay,
+	 sendtime,
+	 overtime_pay
+		FROM
+			wage 
+		<include refid="selectWageListWhere"/>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectWageListCount" parameterType="wage" 
+                                                 resultType="Integer">
+		select count(*) from wage
+		<include refid="selectWageListWhere"/>
+	</select>	
+	
+	<!-- 添加员工 -->
+	<insert id="createWage" parameterType="wage">
+	    insert into wage(
+	 id,
+     bills_number,
+	 base_pay,
+	 insurances_pay,
+     merit_pay,
+	 subsidy_pay,
+	 sendtime,
+	 overtime_pay
+	             )
+	             values(#{bills_number},
+	                    #{id},
+	                    #{base_pay},
+	                    #{insurances_pay},
+	                    #{merit_pay},
+	                    #{subsidy_pay},
+	                    #{sendtime},
+	                    #{overtime_pay}
+	                   
+	            )
+
+	</insert>
+	<!-- 根据id获取员工信息 -->
+	<select id="getWageById" parameterType="Integer" 
+	resultType="wage">
+	    select * from wage where id = #{id}
+	</select>
+		<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="wage" 
+                                                 resultType="wage">
+		select * from wage where 1=1 
+		<if test="bills_number != null" >
+	           bills_number like "%"#{bills_number}"%"
+	       </if>
+	       <if test="id != null" >
+	        and id = #{id}
+	       </if>
+	       <if test="base_pay != null" >
+	        and base_pay = #{base_pay}
+	       </if>
+	       <if test="insurances_pay != null" >
+	        and insurances_pay = #{insurances_pay}
+	       </if>
+           <if test="merit_pay != null" >
+	        and merit_pay = #{merit_pay}
+	       </if>
+	       <if test="subsidy_pay != null" >
+	        and subsidy_pay = #{subsidy_pay}
+	       </if>
+	       <if test="sendtime != null" >
+	        and sendtime = #{sendtime}
+	       </if>
+	       <if test="overtime_pay != null" >
+	        and overtime_pay = #{overtime_pay}
+	       </if>
+        </select>
+</mapper>

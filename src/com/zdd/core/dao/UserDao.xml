@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.UserDao" >
+    <!-- 查询用户 -->
+   <select id="findUser" parameterType="user" resultType="user">
+	    select *
+	    from user
+	    where username=#{username}
+	    and password=#{password}
+	    and role=#{role}
+	    and 1=1
+    </select>
+      <!--SQL片段单独查询 -->
+   <sql id="selectUserListWhere">
+        <where>
+	       <if test="username != null" >
+	           username like "%"#{username}"%"
+	       </if>
+	       <if test="password != null" >
+	        and password = #{password}
+	       </if>
+	       <if test="role != null" >
+	        and role = #{role}
+	       </if>
+	     
+        </where>
+    </sql> 
+    <!-- 查询员工列表  -->
+	<select id="selectUserList" parameterType="user" 
+                                           resultType="user">
+		SELECT
+		    id,
+			username,
+			password,
+			role
+		FROM
+			user 
+		<include refid="selectUserListWhere"/>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectUserListCount" parameterType="user" 
+                                                 resultType="Integer">
+		select count(*) from user
+		<include refid="selectUserListWhere"/>
+	</select>	
+	
+	<!-- 添加员工 -->
+	<insert id="createUser" parameterType="user">
+	    insert into user(
+	        username,
+			password,
+			role
+	             )
+	             values(#{username},
+	                    #{password},
+	                    #{role}
+	            )
+	</insert>
+	<!-- 根据id获取员工信息 -->
+	<select id="getUserById" parameterType="Integer" 
+	resultType="user">
+	    select * from user where id = #{id}
+	</select>
+	<!-- 更新员工 -->
+	<update id="updateUser" parameterType="user">
+	    update user 
+	    <set>
+	        <if test="username!=null">
+	             username=#{username},
+	        </if>
+	        <if test="password!=null">
+	            password=#{password},
+	        </if>
+	        <if test="role!=null">
+	            role=#{role},
+	        </if>
+	        
+	    </set>
+	    where id=#{id}
+	</update>
+	<!-- 删除员工 -->
+	<delete id="deleteUser" parameterType="Integer">
+	    delete from user where id=#{id}
+	</delete>
+	<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="user" 
+                                                 resultType="user">
+		select * from user where 1=1 
+		  <if test=" username!=null">
+	             username=#{username},
+	        </if>
+	        <if test="password!=null">
+	            password=#{password},
+	        </if>
+	        <if test="role!=null">
+	            role=#{role},
+	        </if>
+        </select>
+</mapper>

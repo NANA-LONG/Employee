@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zdd.core.dao.Department1Dao">
+    <!--SQL片段单独查询 -->
+   <sql id="selectDepartmentListWhere">
+        <where>
+	       <if test="department_number != null" >
+	           department_number like '%#{department_number}%'
+	       </if>
+
+	       <if test="department_name != null" >
+	        and department_name = #{department_name}
+	       </if>
+        </where>
+    </sql> 
+	<!-- 查询员工列表  -->
+	<select id="selectDepartmentList" parameterType="department" 
+                                           resultType="department">
+		SELECT
+		     id,
+			 department_number,
+	         department_name
+		FROM
+			department 
+		<include refid="selectDepartmentListWhere"/>
+		<!-- 执行分页查询 -->
+		<if test="start !=null and rows != null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 查询员工总数 -->
+	<select id="selectDepartmentListCount" parameterType="department" 
+                                                 resultType="Integer">
+		select count(*) from department
+		<include refid="selectDepartmentListWhere"/>
+	</select>	
+	<!-- 课程模糊查询 -->
+	<select id="selectVague" parameterType="department" 
+                                                 resultType="department">
+		select * from department where 1=1 
+		 <if test="department_number != null" >
+	           department_number like '%#{department_number}%'
+	       </if>
+	       <if test="department_name != null" >
+	        and department_name = #{department_name}
+	       </if>
+        </select>
+	
+</mapper>
